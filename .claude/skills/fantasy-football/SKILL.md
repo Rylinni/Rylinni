@@ -6,7 +6,16 @@ description: Fantasy football analyst for the user's Sleeper league. Use wheneve
 # Fantasy Football Analyst (Sleeper)
 
 All league data comes from Sleeper's free public API (no key): `https://api.sleeper.app/v1`.
-A league ID is all that's needed. If the user hasn't given one this conversation, ask for it.
+A league ID is all that's needed.
+
+## The user's saved leagues
+
+Use these by default (analyze both unless the user names one). The user is `ryanlinni` in both.
+
+| League | Sleeper league ID | Format | User's team |
+|--------|-------------------|--------|-------------|
+| Jug nation dynasty | `1336808939680989184` | 10-team dynasty, full PPR, K + DEF, rolling waivers, 3 taxi slots | The Naughty Gargamels (roster_id 3) |
+| HMSD Keeper | `1312196395939164160` | 12-team keeper, half PPR + 0.5 TE bonus, no K/DEF, FAAB ($100) | Naughty Gargamel (roster_id 8) |
 
 ## Loading the league (do this first, with curl + jq, saving responses to the scratchpad)
 
@@ -18,7 +27,7 @@ A league ID is all that's needed. If the user hasn't given one this conversation
 6. `GET /players/nfl`: player map (~5MB). Download once to a file and never print it. Look up IDs with jq,
    e.g. `jq '."4046" | {full_name, position, team, injury_status}'`.
 
-To find the user's team, list the team names and ask once which is theirs, then remember it for the conversation.
+For a league not listed above, list the team names and ask once which is theirs, then remember it for the conversation.
 
 Other useful endpoints:
 - Free agents: players in the map with `active == true`, a `team`, and a fantasy position, that are on no league roster.
