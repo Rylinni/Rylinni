@@ -17,6 +17,13 @@ Use these by default (analyze both unless the user names one). The user is `ryan
 | Jug nation dynasty | `1336808939680989184` | 10-team dynasty, full PPR, K + DEF, rolling waivers, 3 taxi slots | The Naughty Gargamels (roster_id 3) |
 | HMSD Keeper | `1312196395939164160` | 12-team keeper, half PPR + 0.5 TE bonus, no K/DEF, FAAB ($100) | Naughty Gargamel (roster_id 8) |
 
+**HMSD Keeper rules** (from the user, plus draft history):
+- TE premium: TEs get +0.5 per catch (effectively full PPR). Public value sites (FantasyCalc, KTC) ignore this, so adjust TEs up.
+- Up to 3 keepers. A player can't be kept two years in a row, and you can't keep your own top two draft picks.
+- Keeper cost appears to be one round earlier than the player's draft round the year before (inferred from draft history, not confirmed).
+
+**Value sources that work:** KeepTradeCut dynasty values (`https://keeptradecut.com/dynasty-rankings?format=1`, JSON in the `<script id="ktc-players">` tag) and the FantasyCalc API (`https://api.fantasycalc.com/values/current?isDynasty=<bool>&numQbs=1&numTeams=<n>&ppr=<0.5|1>`, includes `sleeperId`).
+
 ## Loading the league (do this first, with curl + jq, saving responses to the scratchpad)
 
 1. `GET /league/<league_id>`: name, season, scoring settings (PPR/half/std, superflex), roster positions.
