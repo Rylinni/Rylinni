@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "flaim": {
-      "type": "http",
-      "url": "https://api.flaim.app/mcp"
-    }
-  }
-}

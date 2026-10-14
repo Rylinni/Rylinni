@@ -1,36 +1,35 @@
 ---
 name: fantasy-football
-description: Fantasy football analyst for the user's Sleeper league(s). Use whenever the user asks about their fantasy team, roster, lineup, start/sit, waiver wire, free agents, trades, matchups, standings, or trending players.
+description: Fantasy football analyst for the user's Sleeper league. Use whenever the user mentions a Sleeper league ID or asks about their fantasy team, roster, lineup, start/sit, waivers, free agents, trades, matchups, standings, or trending players.
 ---
 
 # Fantasy Football Analyst (Sleeper)
 
-## Data sources — in this order
+All league data comes from Sleeper's free public API (no key): `https://api.sleeper.app/v1`.
+A league ID is all that's needed. If the user hasn't given one this conversation, ask for it.
 
-1. **Flaim MCP** (`mcp__flaim__*` tools, hosted at https://api.flaim.app/mcp, read-only).
-   Use these first if they are loaded. If the tools error with an auth/link problem,
-   tell the user to connect their Sleeper username at https://flaim.app.
-2. **Sleeper public API** (fallback, no key): `https://api.sleeper.app/v1`
-   - User: `GET /user/<username>` → `user_id`
-   - Leagues: `GET /user/<user_id>/leagues/nfl/<season>` (current season: `GET /state/nfl` → `season`, `week`)
-   - Rosters: `GET /league/<league_id>/rosters` (match `owner_id` to `user_id`)
-   - League members: `GET /league/<league_id>/users` (map `owner_id` → `display_name`)
-   - Matchups: `GET /league/<league_id>/matchups/<week>`
-   - Trending: `GET /players/nfl/trending/add?lookback_hours=24&limit=25` (and `/drop`)
-   - Player map: `GET /players/nfl` (~5MB — download once per session to a scratch file, never print it;
-     look up IDs with `jq`, e.g. `jq '."4046" | {full_name, position, team, injury_status}'`)
-   - Free agents = players in the player map not on any roster in the league (filter by position, active, team != null).
-3. **Web search** for injuries, news, depth charts, projections and rankings.
+## Loading the league (do this first, with curl + jq, saving responses to the scratchpad)
 
-If the Sleeper username or league isn't known, ask for it once. If the user has more than one
-NFL league, ask which (or answer for all if the question is general).
+1. `GET /league/<league_id>`: name, season, scoring settings (PPR/half/std, superflex), roster positions.
+2. `GET /league/<league_id>/users`: map `user_id` to `display_name` / `metadata.team_name`.
+3. `GET /league/<league_id>/rosters`: `owner_id`, `players`, `starters`, `reserve` (IR), `settings` (wins/losses/fpts).
+4. `GET /state/nfl`: current `week`.
+5. `GET /league/<league_id>/matchups/<week>`: pairs by `matchup_id`, points, starters.
+6. `GET /players/nfl`: player map (~5MB). Download once to a file and never print it. Look up IDs with jq,
+   e.g. `jq '."4046" | {full_name, position, team, injury_status}'`.
+
+To find the user's team, list the team names and ask once which is theirs, then remember it for the conversation.
+
+Other useful endpoints:
+- Free agents: players in the map with `active == true`, a `team`, and a fantasy position, that are on no league roster.
+- Trending: `/players/nfl/trending/add?lookback_hours=24&limit=25` (and `/drop`).
+- Transactions: `/league/<league_id>/transactions/<week>`.
+- Picks and drafts: `/league/<league_id>/traded_picks`, `/league/<league_id>/drafts`.
 
 ## Rules
 
-- League data (rosters, matchups, scores, free agents, standings) must come from Flaim or the
-  Sleeper API — **never guess or rely on memory**. If neither is reachable, say so and stop.
-- Injuries, news and rankings come from web search, with the date of the info when relevant.
-- Always use player names (and position/team), never Sleeper player IDs.
-- Lead with the actionable answer (start X, pick up Y, decline the trade), then a short why.
-- Keep it concise: bullets, no filler. Note the league's scoring (PPR/half/standard,
-  superflex) from league settings when it changes the advice.
+- League data (rosters, matchups, scores, free agents, standings) must come from the API. Never guess or use memory.
+  If the API is unreachable, say so (the environment needs `api.sleeper.app` allowed) and stop.
+- Injuries, news, depth charts, projections and rankings come from web search; note how recent the info is.
+- Always use player names (with position/team), never Sleeper IDs.
+- Lead with the actionable answer (start X, add Y, accept/decline), then a short why. Keep it concise.
