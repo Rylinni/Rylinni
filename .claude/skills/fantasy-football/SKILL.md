@@ -8,8 +8,6 @@ description: Fantasy football analyst for the user's Sleeper league. Use wheneve
 All league data comes from Sleeper's free public API (no key): `https://api.sleeper.app/v1`.
 A league ID is all that's needed.
 
-**Before anything else, read `notes.md` in this skill's directory** for decisions, pending trades and open questions from past sessions. At the end of a session, append a dated entry with new decisions and follow-ups, then commit and push.
-
 ## The user's saved leagues
 
 Use these by default (analyze both unless the user names one). The user is `ryanlinni` in both.
@@ -22,6 +20,7 @@ Use these by default (analyze both unless the user names one). The user is `ryan
 **HMSD Keeper rules** (from the user, plus draft history):
 - TE premium: TEs get +0.5 per catch (effectively full PPR). Public value sites (FantasyCalc, KTC) ignore this, so adjust TEs up.
 - Up to 3 keepers. A player can't be kept two years in a row, and you can't keep your own top two draft picks.
+- Players acquired by trade can't be kept.
 - Keeper cost appears to be one round earlier than the player's draft round the year before (inferred from draft history, not confirmed).
 
 **Value sources that work:** KeepTradeCut dynasty values (`https://keeptradecut.com/dynasty-rankings?format=1`, JSON in the `<script id="ktc-players">` tag) and the FantasyCalc API (`https://api.fantasycalc.com/values/current?isDynasty=<bool>&numQbs=1&numTeams=<n>&ppr=<0.5|1>`, includes `sleeperId`).
@@ -46,6 +45,7 @@ Other useful endpoints:
 
 ## Rules
 
+- Only save league rules and settings to this skill. Don't save session history, decisions or trade notes.
 - League data (rosters, matchups, scores, free agents, standings) must come from the API. Never guess or use memory.
   If the API is unreachable, say so (the environment needs `api.sleeper.app` allowed) and stop.
 - Injuries, news, depth charts, projections and rankings come from web search; note how recent the info is.
