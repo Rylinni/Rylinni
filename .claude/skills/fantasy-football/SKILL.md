@@ -8,6 +8,8 @@ description: Fantasy football analyst for the user's Sleeper league. Use wheneve
 All league data comes from Sleeper's free public API (no key): `https://api.sleeper.app/v1`.
 A league ID is all that's needed.
 
+**Before anything else, read `notes.md` in this skill's directory** for decisions, pending trades and open questions from past sessions. At the end of a session, append a dated entry with new decisions and follow-ups, then commit and push.
+
 ## The user's saved leagues
 
 Use these by default (analyze both unless the user names one). The user is `ryanlinni` in both.
